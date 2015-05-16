@@ -1,0 +1,32 @@
+<!doctype html>
+<!--
+ This page is shown when the extension button is clicked, because the
+ "browser_action" field in manifest.json contains the "default_popup" key with
+ value "popup.html".
+ -->
+<html>
+  <head>
+    <title>Getting Started Extension's Popup</title>
+    <head>
+      <link rel="stylesheet" type="text/css" href="styles/style.css">
+
+    <!--
+      - JavaScript and HTML must be in separate files: see our Content Security
+      - Policy documentation[1] for details and explanation.
+      -
+      - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
+     -->
+    <script src="components/dest/all.js"></script>
+   
+  </head>
+  <body>
+    <div id="whole-window">
+      <div id="player-welcome"></div>
+      <img id="player-picture" />
+      <div id="found-treasures"></div>
+      <div id="found-enemies"></div>
+      <div id="home"></div>
+    </div>
+  </body>
+</html>
+

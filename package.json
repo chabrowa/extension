@@ -1,0 +1,39 @@
+{
+  "name": "extension",
+  "version": "1.0.0",
+  "description": "",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "browserify": "^10.2.0",
+    "ddp": "git://github.com/Reggino/node-ddp-client.git",
+    "gulp-util": "^3.0.4",
+    "reactify": "^1.1.1",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
+  },
+  "devDependencies": {
+    "browserify": "^10.2.0",
+    "gulp": "^3.8.11",
+    "gulp-babel": "^5.1.0",
+    "gulp-concat": "^2.5.2",
+    "gulp-less": "^3.0.3",
+    "gulp-util": "^3.0.4",
+    "gulp-watch": "^4.2.4",
+    "reactify": "^1.1.1",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mathieudutour/extension.git"
+  },
+  "author": "Mathieu Dutour <mathieu@dutour.me> (http://mathieu.dutour.me/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mathieudutour/extension/issues"
+  },
+  "homepage": "https://github.com/mathieudutour/extension"
+}

@@ -9,8 +9,8 @@ var setChromeStorage = function(obj) {
 var storageHandler = function(event) {
   event = event || window.event;
   var user = JSON.parse(event.newValue);
-
-  setChromeStorage(user);
+  console.log(user)
+  //setChromeStorage(user);
 };
 
 if (window.location.hostname === config.url) {

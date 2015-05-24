@@ -1,3 +1,5 @@
+var config = require('../config');
+
 // Attach DDP to your local app
 
 // http://stackoverflow.com/questions/8498592/extract-root-domain-name-from-string
@@ -33,8 +35,8 @@ var DDPClient = require("ddp");
 
 var ddpclient = new DDPClient({
   // All properties optional, defaults shown
-  host : "localhost",
-  port : 3000,
+  host : config.url,
+  port : 80,
   ssl  : false,
   autoReconnect : true,
   autoReconnectTimer : 500,

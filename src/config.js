@@ -1,3 +1,3 @@
 module.exports = {
-  url: "localhost"
+  url: "zombie-game.meteor.com"
 };

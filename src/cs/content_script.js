@@ -2,7 +2,7 @@ var config = require('../config');
 
 var setChromeStorage = function(obj) {
   chrome.storage.sync.set({'game_user': obj}, function () {
-    console.log("Just logged, put on the storage");
+    console.log("Just logged, put on the storage", obj);
   });
 };
 
@@ -30,3 +30,16 @@ if (window.location.hostname === config.url) {
   }
 }
 
+chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
+  if (msg.show_opponents) {
+    chrome.runtime.sendMessage({get: "opponents"}, function(response) {
+      console.log(response);
+    });
+  }
+
+});
+
+  /*
+  html2canvas(document.body).then(function(canvas) {
+    document.body.appendChild(canvas);
+});*/

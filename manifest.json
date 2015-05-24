@@ -4,7 +4,6 @@
   "name": "Getting started example",
   "description": "This extension shows a Google Image search result for the current page",
   "version": "1.0",
-  "permissions": ["tabs"],
   "background": {
     "page": "bg/background.html",
     "persistent": true
@@ -19,12 +18,15 @@
   ],
   "browser_action": {
     "default_icon": "/images/crown.png",
-    "default_popup": "src/browser_action/browser_action.html"
+    "default_popup": "ba/browser_action.html"
   },
   "permissions": [
     "storage",
     "tabs",
     "http://*/*",
     "https://*/*"
-  ]
+  ],
+  "externally_connectable": {
+    "matches": ["*://zombie-game.meteor.com/"]
+  }
 }

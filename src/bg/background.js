@@ -24,6 +24,11 @@ var getDomainFromTab = function(tab) {
 
 var userId = null;
 
+chrome.storage.sync.get(function (value) {
+  userId = value.game_user && value.game_user._id;
+  console.log("item in storage", value.game_user);
+});
+
 var DDPClient = require("ddp");
 
 var ddpclient = new DDPClient({
@@ -93,7 +98,7 @@ ddpclient.connect(function(error, wasReconnect) {
     var domain = getDomainFromTab(tab);
 
     if (domain) {
-      if (!userId) {
+      if (userId) {
         ddpclient.call(
           "changeURL",              // name of Meteor Method being called
           [domain, userId],                 // parameters to send to Meteor Method
@@ -127,4 +132,13 @@ ddpclient.connect(function(error, wasReconnect) {
 chrome.storage.onChanged.addListener(function (changes) {
   userId = changes.game_user.newValue && changes.game_user.newValue._id;
   console.log("New item in storage",changes.game_user.newValue);
-})
+});
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  console.log(sender.tab ?
+              "from a content script:" + sender.tab.url :
+              "from the extension");
+  if (request.get == "opponents") {
+    sendResponse(ddpclient.collections);
+  }
+});

@@ -25,6 +25,7 @@ var getDomainFromTab = function(tab) {
 };
 
 var userId = null;
+var currentDomain = null;
 
 chrome.storage.sync.get(function (value) {
   userId = value.game_user && value.game_user._id;
@@ -80,9 +81,11 @@ ddpclient.connect(function(error, wasReconnect) {
    */
   var observer = ddpclient.observe("users");
   observer.added = function(id) {
-    opponentCounts++;
-    chrome.browserAction.setBadgeText({text: opponentCounts.toString()});
-    console.log("[ADDED] to " + observer.name + ":  " + id);
+    if (userId !== id) {
+      opponentCounts++;
+      chrome.browserAction.setBadgeText({text: opponentCounts.toString()});
+      console.log("[ADDED] to " + observer.name + ":  " + id);
+    }
   };
   observer.changed = function(id, oldFields, clearedFields) {
     console.log("[CHANGED] in " + observer.name + ":  " + id);
@@ -90,16 +93,19 @@ ddpclient.connect(function(error, wasReconnect) {
     console.log("[CHANGED] cleared fields: ", clearedFields);
   };
   observer.removed = function(id, oldValue) {
-    opponentCounts--;
-    chrome.browserAction.setBadgeText({text: opponentCounts.toString()});
-    console.log("[REMOVED] in " + observer.name + ":  " + id);
-    console.log("[REMOVED] previous value: ", oldValue);
+    if (userId !== id) {
+      opponentCounts--;
+      chrome.browserAction.setBadgeText({text: opponentCounts.toString()});
+      console.log("[REMOVED] in " + observer.name + ":  " + id);
+      console.log("[REMOVED] previous value: ", oldValue);
+    }
   };
 
   var updateTab = function(tab) {
     var domain = getDomainFromTab(tab);
 
-    if (domain) {
+    if (domain && currentDomain !== domain) {
+      currentDomain = domain;
       if (userId) {
         ddpclient.call(
           "changeURL",              // name of Meteor Method being called
@@ -113,12 +119,20 @@ ddpclient.connect(function(error, wasReconnect) {
         "opponents",    // name of Meteor Publish function to subscribe to
         [domain],       // any parameters used by the Publish function
         function () {   // callback when the subscription is complete
-          console.log("posts complete:");
-          console.log(ddpclient.collections.posts);
+          console.log(ddpclient.collections.users);
+          var users = Object.keys(ddpclient.collections.users).length;
+          if (userId) {users--;}
+          chrome.browserAction.setBadgeText({text: users.toString()});
         }
       );
     }
   };
+
+  chrome.tabs.onActivated.addListener(function(info) {
+    chrome.tabs.get(info.tabId, function(tab){
+      updateTab(tab);
+    });
+  });
 
   chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
       updateTab(tab);
@@ -127,6 +141,8 @@ ddpclient.connect(function(error, wasReconnect) {
   chrome.tabs.onCreated.addListener(function(tabId, changeInfo, tab) {
      updateTab(tab);
   });
+
+  // TODO onRemoved
 
 });
 
@@ -141,6 +157,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
               "from a content script:" + sender.tab.url :
               "from the extension");
   if (request.get == "opponents") {
-    sendResponse(ddpclient.collections);
+    if (userId && ddpclient.collections.users) {
+      delete ddpclient.collections.users[userId];
+    }
+    sendResponse(ddpclient.collections.users);
   }
 });

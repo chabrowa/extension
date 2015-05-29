@@ -5,6 +5,7 @@
   "main": "gulpfile.js",
   "dependencies": {
     "ddp": "git://github.com/Reggino/node-ddp-client.git",
+    "handlebars": "^3.0.3",
     "html2canvas": "^0.5.0-alpha2"
   },
   "devDependencies": {

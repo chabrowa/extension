@@ -121,9 +121,10 @@ ddpclient.connect(function(error, wasReconnect) {
         "opponents",    // name of Meteor Publish function to subscribe to
         [domain],       // any parameters used by the Publish function
         function () {   // callback when the subscription is complete
-          console.log(ddpclient.collections.users);
-          var users = Object.keys(ddpclient.collections.users).length;
-          chrome.browserAction.setBadgeText({text: users.toString()});
+          if(ddpclient.collections.users) {
+            var users = Object.keys(ddpclient.collections.users).length;
+            chrome.browserAction.setBadgeText({text: users.toString()});
+          }
         }
       );
     }

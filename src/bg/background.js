@@ -25,10 +25,12 @@ var getDomainFromTab = function(tab) {
 };
 
 var userId = null;
+var user = null;
 var currentDomain = null;
 
 chrome.storage.sync.get(function (value) {
   userId = value.game_user && value.game_user._id;
+  user = value.game_user
   console.log("item in storage", value.game_user);
 });
 
@@ -119,10 +121,10 @@ ddpclient.connect(function(error, wasReconnect) {
         "opponents",    // name of Meteor Publish function to subscribe to
         [domain],       // any parameters used by the Publish function
         function () {   // callback when the subscription is complete
-          console.log(ddpclient.collections.users);
-          var users = Object.keys(ddpclient.collections.users).length;
-          if (userId) {users--;}
-          chrome.browserAction.setBadgeText({text: users.toString()});
+          if(ddpclient.collections.users) {
+            var users = Object.keys(ddpclient.collections.users).length;
+            chrome.browserAction.setBadgeText({text: users.toString()});
+          }
         }
       );
     }
@@ -149,17 +151,25 @@ ddpclient.connect(function(error, wasReconnect) {
 //get the game_user from the chrome storage
 chrome.storage.onChanged.addListener(function (changes) {
   userId = changes.game_user.newValue && changes.game_user.newValue._id;
+  user = changes.game_user.newValue;
   console.log("New item in storage",changes.game_user.newValue);
 });
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  console.log(sender.tab ?
-              "from a content script:" + sender.tab.url :
-              "from the extension");
   if (request.get == "opponents") {
     if (userId && ddpclient.collections.users) {
       delete ddpclient.collections.users[userId];
     }
-    sendResponse(ddpclient.collections.users);
+    sendResponse({opponents:ddpclient.collections.users, me: user});
+  } else if (request.fight) {
+    if (userId) {
+      ddpclient.call(
+        "fight",              // name of Meteor Method being called
+        [userId, request.fight], // parameters to send to Meteor Method
+        function (err, result) {  // callback which returns the method call results
+          console.log("called function, result: " + result);
+        }
+      );
+    }
   }
 });

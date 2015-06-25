@@ -1,3 +1,3 @@
 module.exports = {
-  url: "zombie-game.meteor.com"
+  url: "computer-heroes.meteor.com"
 };
